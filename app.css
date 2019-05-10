@@ -1,0 +1,25 @@
+body {
+    color: white;
+    background-color: black;
+    font-size: 12px;
+    font-family: 'Courier New', Courier, monospace;
+}
+#box {
+    width: 1000px;
+    border: 1px solid white;
+}
+#sidebar {
+    width: 200px;
+    float: left;
+    border: 1px solid red;
+}
+#main {
+    width: 750px;
+    float: left;
+    margin-left: 20px;
+    border: 1px solid blue;
+}
+#messages {
+    font-size: 14px;
+    border: 1px solid green;
+}
