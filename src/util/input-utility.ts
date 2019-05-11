@@ -1,28 +1,28 @@
 export class InputUtility {
-    private static processInputCallback: (event: KeyboardEvent) => any;
-    private static resolve: (value?: any) => void;
+    private processInputCallback: (event: KeyboardEvent) => any;
+    private resolve: (value?: any) => void;
 
-    static waitForInput(handleInput: (event: KeyboardEvent) => boolean): Promise<any> {
+    waitForInput(handleInput: (event: KeyboardEvent) => boolean): Promise<any> {
         return new Promise(resolve => {
-            if (InputUtility.processInputCallback !== undefined) {
-                InputUtility.stopProcessing();
+            if (this.processInputCallback !== undefined) {
+                this.stopProcessing();
             }
 
-            InputUtility.resolve = resolve;
-            InputUtility.processInputCallback = (event: KeyboardEvent) => InputUtility.processInput(event, handleInput);
-            window.addEventListener("keydown", InputUtility.processInputCallback);
+            this.resolve = resolve;
+            this.processInputCallback = (event: KeyboardEvent) => this.processInput(event, handleInput);
+            window.addEventListener("keydown", this.processInputCallback);
         });
     }
 
-    private static processInput(event: KeyboardEvent, handleInput: (event: KeyboardEvent) => boolean): void {
+    private processInput(event: KeyboardEvent, handleInput: (event: KeyboardEvent) => boolean): void {
         if (handleInput(event)) {
-            InputUtility.stopProcessing();
+            this.stopProcessing();
         }
     }
 
-    private static stopProcessing(): void {
-        window.removeEventListener("keydown", InputUtility.processInputCallback);
-        InputUtility.processInputCallback = undefined;
-        InputUtility.resolve();
+    private stopProcessing(): void {
+        window.removeEventListener("keydown", this.processInputCallback);
+        this.processInputCallback = undefined;
+        this.resolve();
     }
 }

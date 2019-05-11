@@ -15,35 +15,36 @@ export interface SidebarLine {
 }
 
 export class Sidebar {
-    private static node = document.getElementById("sidebar");
-    private static lineId = "sidebar-line-";
+    private lineId = "sidebar-line-";
 
-    static setLine(id: string, line: SidebarLine): void {
+    constructor(private node: HTMLElement) { }
+
+    setLine(id: string, line: SidebarLine): void {
         let lineElement = document.getElementById(this.getIdAttribute(id));
         if (!lineElement) {
-            Sidebar.addLine(id, line);
+            this.addLine(id, line);
         } else {
-            Sidebar.updateLine(id, line);
+            this.updateLine(id, line);
         }
     }
 
-    static removeLine(id: string): void {
+    removeLine(id: string): void {
         let lineElement = document.getElementById(this.getIdAttribute(id));
         if (!lineElement) {
             return;
         }
-        Sidebar.node.removeChild(lineElement);
+        this.node.removeChild(lineElement);
     }
 
-    private static addLine(id: string, line: SidebarLine): void {
+    private addLine(id: string, line: SidebarLine): void {
         let lineElement = document.createElement("div");
-        lineElement.setAttribute("id", Sidebar.getIdAttribute(id));
+        lineElement.setAttribute("id", this.getIdAttribute(id));
         lineElement.setAttribute("class", "line");
 
         if (line.BarPercent) {
             let element = document.createElement("div");
             element.setAttribute("class", "bar");
-            element.setAttribute("style", Sidebar.getBarStyle(line.BarPercent, line.BarColor));
+            element.setAttribute("style", this.getBarStyle(line.BarPercent, line.BarColor));
             lineElement.appendChild(element);
         }
 
@@ -61,10 +62,10 @@ export class Sidebar {
             lineElement.appendChild(element);
         }
 
-        Sidebar.node.appendChild(lineElement);
+        this.node.appendChild(lineElement);
     }
 
-    private static updateLine(id: string, line: SidebarLine): void {
+    private updateLine(id: string, line: SidebarLine): void {
         let lineElement = document.getElementById(this.getIdAttribute(id));
 
         if (line.BarPercent || line.BarColor) {
@@ -78,7 +79,7 @@ export class Sidebar {
                 line.BarColor = style.match(/background:\s*([^;]+)\s*;/i)[1];
             }
 
-            element.setAttribute("style", Sidebar.getBarStyle(line.BarPercent, line.BarColor));
+            element.setAttribute("style", this.getBarStyle(line.BarPercent, line.BarColor));
         }
 
         if (line.Left) {
@@ -92,11 +93,11 @@ export class Sidebar {
         }
     }
 
-    private static getIdAttribute(id: string): string {
-        return `${Sidebar.lineId}${id}`;
+    private getIdAttribute(id: string): string {
+        return `${this.lineId}${id}`;
     }
 
-    private static getBarStyle(barPercent: number, barColor?: string): string {
+    private getBarStyle(barPercent: number, barColor?: string): string {
         let style = `width: ${barPercent}%;`;
         if (barColor) {
             style += `background: ${barColor};`;

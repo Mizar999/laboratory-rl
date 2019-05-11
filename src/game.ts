@@ -4,11 +4,12 @@ import { DisplayOptions } from "rot-js/lib/display/types";
 import { MessageLog } from "./ui/messsage-log";
 import { Sidebar, LineType } from "./ui/sidebar";
 import { InputUtility } from "./util/input-utility";
+import { ServiceLocator } from "./service-locator";
 
 export class Game {
     private display: Display
     private displayOptions: Partial<DisplayOptions>;
-    private turns = { max: 80, value: 80 };
+    private turns = { max: 25, value: 25 };
 
     constructor() {
         this.displayOptions = {
@@ -20,30 +21,40 @@ export class Game {
         this.display = new Display(this.displayOptions);
         document.getElementById("display").appendChild(this.display.getContainer());
 
+        this.initialize();
         this.debug();
     }
 
+    private initialize(): void {
+        ServiceLocator.provideInputUtility(new InputUtility());
+        ServiceLocator.provideMessageLog(new MessageLog(document.getElementById("messages"), 4));
+        ServiceLocator.provideSidebar(new Sidebar(document.getElementById("sidebar")));
+    }
+
     private debug(): Promise<any> {
-        Sidebar.setLine(LineType.HeaderPlayer, { Left: "@: Player" });
-        Sidebar.setLine(LineType.Strength, { Left: "Strength", Right: "11 / 11", BarPercent: 100, BarColor: "crimson" });
-        Sidebar.setLine(LineType.Speed, { Left: "Speed", Right: "10 / 10", BarPercent: 100, BarColor: "limegreen" });
-        Sidebar.setLine(LineType.Mind, { Left: "Mind", Right: "7 / 7", BarPercent: 100, BarColor: "cornflowerblue" });
-        Sidebar.setLine(LineType.HeaderEffects, { Left: "Effects" });
-        Sidebar.setLine(LineType.Poison, { Left: "Poison", Right: `${this.turns.value} turn(s)`, BarPercent: ((this.turns.value / this.turns.max) * 100), BarColor: "slategray" });
+        let sidebar = ServiceLocator.getSidebar();
+        sidebar.setLine(LineType.HeaderPlayer, { Left: "@: Player" });
+        sidebar.setLine(LineType.Strength, { Left: "Strength", Right: "11 / 11", BarPercent: 100, BarColor: "crimson" });
+        sidebar.setLine(LineType.Speed, { Left: "Speed", Right: "10 / 10", BarPercent: 100, BarColor: "limegreen" });
+        sidebar.setLine(LineType.Mind, { Left: "Mind", Right: "7 / 7", BarPercent: 100, BarColor: "cornflowerblue" });
+        sidebar.setLine(LineType.HeaderEffects, { Left: "Effects" });
+        sidebar.setLine(LineType.Poison, { Left: "Poison", Right: `${this.turns.value} turn(s)`, BarPercent: ((this.turns.value / this.turns.max) * 100), BarColor: "slategray" });
 
-        MessageLog.addMessages("&nbsp;", "&nbsp;", "&nbsp;", "Press some keys ...");
+        ServiceLocator.getMessageLog().addMessages("&nbsp;", "&nbsp;", "&nbsp;", "Press some keys ...");
 
-        return InputUtility.waitForInput(this.handleInput.bind(this));
+        return ServiceLocator.getInputUtility().waitForInput(this.handleInput.bind(this));
     }
 
     private handleInput(event: KeyboardEvent): boolean {
-        MessageLog.addMessages(`Key '${event.code}' was pressed`);
+        ServiceLocator.getMessageLog().addMessages(`Key '${event.code}' was pressed`);
+
         if (this.turns.value > 0) {
             --this.turns.value;
+            let sidebar = ServiceLocator.getSidebar();
             if (this.turns.value > 0) {
-                Sidebar.setLine(LineType.Poison, { Right: `${this.turns.value} turn(s)`, BarPercent: ((this.turns.value / this.turns.max) * 100) });
+                sidebar.setLine(LineType.Poison, { Right: `${this.turns.value} turn(s)`, BarPercent: ((this.turns.value / this.turns.max) * 100) });
             } else {
-                Sidebar.removeLine(LineType.Poison);
+                sidebar.removeLine(LineType.Poison);
             }
         }
         return false;
