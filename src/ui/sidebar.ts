@@ -72,7 +72,7 @@ export class Sidebar {
             let style = element.getAttribute("style");
 
             if (!line.BarPercent) {
-                line.BarPercent = parseFloat(style.match(/width:\s*([\d\.]+)%\s*;/i)[1]);
+                line.BarPercent = parseFloat(style.match(/width:\s*([^%]+)%\s*;/i)[1]);
             }
             if (!line.BarColor) {
                 line.BarColor = style.match(/background:\s*([^;]+)\s*;/i)[1];
