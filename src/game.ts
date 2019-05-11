@@ -38,7 +38,7 @@ export class Game {
         sidebar.setLine(LineType.Speed, { Left: "Speed", Right: "10 / 10", BarPercent: 100, BarColor: "limegreen" });
         sidebar.setLine(LineType.Mind, { Left: "Mind", Right: "7 / 7", BarPercent: 100, BarColor: "cornflowerblue" });
         sidebar.setLine(LineType.HeaderEffects, { Left: "Effects" });
-        sidebar.setLine(LineType.Poison, { Left: "Poison", Right: `${this.turns.value} turn(s)`, BarPercent: ((this.turns.value / this.turns.max) * 100), BarColor: "slategray" });
+        sidebar.setLine(LineType.Poison, { Left: "Poison", Right: `${this.turns.value} ${this.turns.value == 1 ? "turn" : "turns"}`, BarPercent: ((this.turns.value / this.turns.max) * 100), BarColor: "slategray" });
 
         ServiceLocator.getMessageLog().addMessages("&nbsp;", "&nbsp;", "&nbsp;", "Press some keys ...");
 
@@ -52,7 +52,7 @@ export class Game {
             --this.turns.value;
             let sidebar = ServiceLocator.getSidebar();
             if (this.turns.value > 0) {
-                sidebar.setLine(LineType.Poison, { Right: `${this.turns.value} turn(s)`, BarPercent: ((this.turns.value / this.turns.max) * 100) });
+                sidebar.setLine(LineType.Poison, { Right: `${this.turns.value} ${this.turns.value == 1 ? "turn" : "turns"}`, BarPercent: ((this.turns.value / this.turns.max) * 100) });
             } else {
                 sidebar.removeLine(LineType.Poison);
             }
