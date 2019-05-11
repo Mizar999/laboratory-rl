@@ -1,6 +1,6 @@
 # Laboratory RL
 
-A roguelike game built with TypeScript and the [rot.js](https://github.com/ondras/rot.js) library. The game is currently in the planning and design phase. It's "playable" at the following link, if you're interested in it's current state [https://mizar999.github.io/laboratory-rl/](https://mizar999.github.io/laboratory-rl/)
+A roguelike game built with TypeScript and the [rot.js](https://github.com/ondras/rot.js) library. **The game is currently in the planning and design phase**. It's not playable in it's current state, but if you're interested anyway follow this link [https://mizar999.github.io/laboratory-rl/](https://mizar999.github.io/laboratory-rl/)
 
 ## Resources
 
