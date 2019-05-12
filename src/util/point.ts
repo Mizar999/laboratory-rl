@@ -5,7 +5,11 @@ export class Point {
         return this.x + "," + this.y;
     }
 
-    fromKey(key: string): Point {
+    equals(point: Point): boolean {
+        return this.x == point.x && this.y == point.y;
+    }
+
+    static fromKey(key: string): Point {
         let parts = key.split(",");
         return new Point(parseInt(parts[0]), parseInt(parts[1]));
     }

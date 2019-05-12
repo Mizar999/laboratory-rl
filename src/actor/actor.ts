@@ -14,4 +14,8 @@ export class Actor extends Entity {
     constructor(public readonly type: ActorType, visual: Visual) {
         super(visual, BlockType.BlocksMovement);
     }
+
+    takeTurn(): Promise<any> {
+        return Promise.resolve();
+    }
 }

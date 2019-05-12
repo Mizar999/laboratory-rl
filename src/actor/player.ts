@@ -1,6 +1,7 @@
 import { Actor, ActorType } from "./actor";
 import { Point } from "../util/point";
 import { Visual } from "../ui/visual";
+import { ServiceLocator } from "../service-locator";
 
 export class PlayerStat {
     value: number;
@@ -30,5 +31,13 @@ export class Player extends Actor {
     constructor(position: Point) {
         super(ActorType.Player, new Visual("@", "white"));
         this.position = position;
+    }
+
+    takeTurn(): Promise<any> {
+        return ServiceLocator.getInputUtility().waitForInput(this.handleInput.bind(this));
+    }
+
+    handleInput(event: KeyboardEvent): boolean {
+        return true;
     }
 }

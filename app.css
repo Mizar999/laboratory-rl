@@ -12,18 +12,13 @@ body {
     float: left;
 }
 #main {
-    width: 750px;
+    width: 760px;
     float: left;
     margin-left: 5px;
-}
-#display {
-    font-size: 14px;
-    border: 1px solid lightgray;
 }
 #messages {
     font-size: 14px;
     padding: 3px;
-    border: 1px solid lightgray;
 }
 .line {
     width: 98%;
