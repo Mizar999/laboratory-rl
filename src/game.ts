@@ -11,7 +11,7 @@ import { InputUtility } from "./util/input-utility";
 import { Point } from "./util/point";
 import { ServiceLocator } from "./service-locator";
 import { Actor } from "./actor/actor";
-import { Command, CommandResult } from "./command/command";
+import { Command, CommandResult, CommandResultType } from "./command/command";
 
 export class Game {
     private display: Display
@@ -125,14 +125,16 @@ export class Game {
         let command: Command;
         let commandResult: CommandResult;
         while (true) {
-            actor = this.scheduler.next();
-            if (!actor) {
-                break;
+            if (!commandResult || commandResult.result != CommandResultType.Wait) {
+                actor = this.scheduler.next();
+                if (!actor) {
+                    break;
+                }
             }
 
             command = await actor.takeTurn();
             commandResult = await command.execute(this);
-            if (!commandResult.success) {
+            if (commandResult.result != CommandResultType.Success && commandResult.message) {
                 this.messageLog.addMessages(commandResult.message);
             }
 

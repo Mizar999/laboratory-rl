@@ -6,11 +6,15 @@ export class Command {
     }
 
     success(): Promise<CommandResult> {
-        return Promise.resolve(new CommandResult(true));
+        return Promise.resolve(new CommandResult(CommandResultType.Success));
     }
 
     fail(reason?: string): Promise<CommandResult> {
-        return Promise.resolve(new CommandResult(false, reason));
+        return Promise.resolve(new CommandResult(CommandResultType.Failure, reason));
+    }
+
+    wait(reason?: string): Promise<CommandResult> {
+        return Promise.resolve(new CommandResult(CommandResultType.Wait, reason));
     }
 
     alternate(game: Game, command: Command): Promise<CommandResult> {
@@ -18,6 +22,12 @@ export class Command {
     }
 }
 
+export const enum CommandResultType {
+    Success,
+    Failure,
+    Wait
+}
+
 export class CommandResult {
-    constructor(public readonly success: boolean, public readonly message?: string) { }
+    constructor(public readonly result: CommandResultType, public readonly message?: string) { }
 }
