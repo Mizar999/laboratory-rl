@@ -11,6 +11,7 @@ import { InputUtility } from "./util/input-utility";
 import { Point } from "./util/point";
 import { ServiceLocator } from "./service-locator";
 import { Actor } from "./actor/actor";
+import { Command, CommandResult } from "./command/command";
 
 export class Game {
     private display: Display
@@ -121,13 +122,20 @@ export class Game {
 
     private async mainLoop(): Promise<any> {
         let actor: Actor;
+        let command: Command;
+        let commandResult: CommandResult;
         while (true) {
             actor = this.scheduler.next();
             if (!actor) {
                 break;
             }
 
-            await actor.takeTurn();
+            command = await actor.takeTurn();
+            commandResult = await command.execute(this);
+            if (!commandResult.success) {
+                this.messageLog.addMessages(commandResult.message);
+            }
+
             this.drawPanel();
         }
     }

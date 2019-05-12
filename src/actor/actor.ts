@@ -2,6 +2,7 @@ import { Entity } from "../ui/entity";
 import { Visual } from "../ui/visual";
 import { BlockType } from "../ui/map/block-type";
 import { Point } from "../util/point";
+import { Command } from "../command/command";
 
 export const enum ActorType {
     Player,
@@ -15,7 +16,7 @@ export class Actor extends Entity {
         super(visual, BlockType.BlocksMovement);
     }
 
-    takeTurn(): Promise<any> {
-        return Promise.resolve();
+    takeTurn(): Promise<Command> {
+        return Promise.resolve(new Command());
     }
 }
