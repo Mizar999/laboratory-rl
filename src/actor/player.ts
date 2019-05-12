@@ -5,11 +5,8 @@ import { Visual } from "../ui/visual";
 export class PlayerStat {
     value: number;
 
-    constructor(public max: number, public boostSave?: number) {
+    constructor(public max: number, public boostSave: number = 0) {
         this.value = max;
-        if (boostSave === undefined) {
-            this.boostSave = 0;
-        }
     }
 
     toPercent(): number {
