@@ -3,6 +3,7 @@ import { Game } from "../../game";
 import { Tile } from "./tile";
 import { Point } from "../../util/point";
 import { BlockType } from "./block-type";
+import { Actor } from "../../actor/actor";
 
 export class Map {
     private floor: { [key: string]: Tile };
@@ -52,6 +53,18 @@ export class Map {
         return result;
     }
 
+    getTileAt(position: Point): Tile {
+        return this.floor[position.toKey()];
+    }
+
+    getActortAt(position: Point): Actor {
+        for (let actor of this.game.getActors()) {
+            if (position.equals(actor.position)) {
+                return actor;
+            }
+        }
+    }
+
     isPassable(position: Point): boolean {
         return this.isPassableFloor(position) && !this.isOccupiedByActor(position);
     }
@@ -65,10 +78,9 @@ export class Map {
     }
 
     isOccupiedByActor(position: Point): boolean {
-        for (let actor of this.game.getActors()) {
-            if (position.equals(actor.position)) {
-                return true;
-            }
+        let actor = this.getActortAt(position);
+        if (actor) {
+            return true;
         }
         return false;
     }

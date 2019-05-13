@@ -1,5 +1,6 @@
 import { KEYS, DIRS } from "rot-js";
 import { Actor, ActorType } from "./actor";
+import { PlayerStats, StatType } from "./player-stats";
 import { Point } from "../util/point";
 import { Visual } from "../ui/visual";
 import { ServiceLocator } from "../service-locator";
@@ -7,17 +8,15 @@ import { Command } from "../command/command";
 import { WalkCommand } from "../command/walk-command";
 
 export class Player extends Actor {
-    strength: PlayerStat;
-    speed: PlayerStat;
-    mind: PlayerStat;
-    maxBoost: number;
-
+    private stats: PlayerStats;
     private keyMap: { [key: number]: number }
     private command: Command;
 
     constructor(position: Point) {
         super(ActorType.Player, new Visual("@", "white"));
         this.position = position;
+
+        this.stats = new PlayerStats();
 
         this.keyMap = {};
         this.keyMap[KEYS.VK_NUMPAD8] = 0; // up
@@ -30,37 +29,43 @@ export class Player extends Actor {
         this.keyMap[KEYS.VK_NUMPAD7] = 7;
     }
 
+    getStats(): PlayerStats {
+        return this.stats;
+    }
+
     async takeTurn(): Promise<Command> {
         this.command = undefined;
         await ServiceLocator.getInputUtility().waitForInput(this.handleInput.bind(this));
         return this.command;
     }
 
-    handleInput(event: KeyboardEvent): boolean {
+    private handleInput(event: KeyboardEvent): boolean {
         let code = event.keyCode;
         if (code in this.keyMap) {
             let diff = DIRS[8][this.keyMap[code]];
             this.command = new WalkCommand(this, diff[0], diff[1]);
+        } else {
+            switch (code) {
+                case KEYS.VK_1:
+                    this.stats.changeStatValue(StatType.Strength, -1);
+                    break;
+                case KEYS.VK_2:
+                    this.stats.changeStatValue(StatType.Strength, 1);
+                    break;
+                case KEYS.VK_3:
+                    this.stats.changeStatValue(StatType.Speed, -1);
+                    break;
+                case KEYS.VK_4:
+                    this.stats.changeStatValue(StatType.Speed, 1);
+                    break;
+                case KEYS.VK_5:
+                    this.stats.changeStatValue(StatType.Mind, -1);
+                    break;
+                case KEYS.VK_6:
+                    this.stats.changeStatValue(StatType.Mind, 1);
+                    break;
+            }
         }
         return this.command !== undefined;
-    }
-}
-
-export class PlayerStat {
-    value: number;
-
-    constructor(public max: number, public boostSave: number = 0) {
-        this.value = max;
-    }
-
-    toPercent(): number {
-        if (this.max == 0) {
-            return 0;
-        }
-        return (this.value / this.max) * 100;
-    }
-
-    toString(): string {
-        return `${this.value} / ${this.max} (${this.boostSave})`;
     }
 }

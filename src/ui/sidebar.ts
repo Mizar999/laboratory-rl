@@ -41,7 +41,7 @@ export class Sidebar {
         lineElement.setAttribute("id", this.getIdAttribute(id));
         lineElement.setAttribute("class", "line");
 
-        if (line.BarPercent) {
+        if (line.BarPercent || line.BarColor) {
             let element = document.createElement("div");
             element.setAttribute("class", "bar");
             element.setAttribute("style", this.getBarStyle(line.BarPercent, line.BarColor));
@@ -66,6 +66,7 @@ export class Sidebar {
     }
 
     private updateLine(id: string, line: SidebarLine): void {
+        // TODO elements of the line must be initialized before update
         let lineElement = document.getElementById(this.getIdAttribute(id));
 
         if (line.BarPercent || line.BarColor) {

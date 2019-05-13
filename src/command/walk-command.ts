@@ -10,9 +10,17 @@ export class WalkCommand extends Command {
 
     execute(game: Game): Promise<CommandResult> {
         let newPoint = new Point(this.actor.position.x + this.dirX, this.actor.position.y + this.dirY);
-        if(!game.getMap().isPassable(newPoint)) {
+        let map = game.getMap();
+
+        if (!map.isPassable(newPoint)) {
             return this.wait(`'${this.actor.constructor.name}' cannot move to ${newPoint.toString()}`);
         }
+
+        let actor = map.getActortAt(newPoint);
+        if (actor) {
+            return this.fail(`'${this.actor.constructor.name}' bumps into '${actor.constructor.name}'`);
+        }
+
         this.actor.position = newPoint;
         return this.success();
     }

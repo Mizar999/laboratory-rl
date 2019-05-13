@@ -6,7 +6,8 @@ import { MessageLog } from "./ui/messsage-log";
 import { Sidebar, LineType } from "./ui/sidebar";
 import { Visual } from "./ui/visual";
 import { Map } from "./ui/map/map";
-import { Player, PlayerStat } from "./actor/player";
+import { Player } from "./actor/player";
+import { StatType, PlayerStat } from "./actor/player-stats";
 import { InputUtility } from "./util/input-utility";
 import { Point } from "./util/point";
 import { ServiceLocator } from "./service-locator";
@@ -83,6 +84,8 @@ export class Game {
     }
 
     private initializeLevel(): void {
+        this.initializeSidebar();
+
         this.map.generateMap(this.displayOptions.width, this.displayOptions.height);
         let positions = this.map.getRandomPassablePositions();
         this.createPlayer(positions[0]);
@@ -113,10 +116,13 @@ export class Game {
                     break;
             }
         }
-        this.player.strength = new PlayerStat(strength, 1)
-        this.player.speed = new PlayerStat(speed, 1)
-        this.player.mind = new PlayerStat(mind)
-        this.player.maxBoost = 1;
+        let stats = this.player.getStats();
+        stats.initializeStat(StatType.Strength, strength, 1);
+        stats.initializeStat(StatType.Speed, speed, 1);
+        stats.initializeStat(StatType.Mind, mind);
+
+        stats.subscribeStatChanged(this.handlePlayerStatsChanged.bind(this));
+
         this.addActor(this.player);
     }
 
@@ -145,29 +151,30 @@ export class Game {
     private drawPanel(): void {
         this.display.clear();
         this.map.draw();
-        this.drawSidebar();
     }
 
-    private drawSidebar(): void {
+    private initializeSidebar(): void {
+        if (this.player) {
+            this.player.getStats().unsubscribeStatChanged(this.handlePlayerStatsChanged.bind(this));
+        }
+
         this.sidebar.setLine(LineType.HeaderPlayer, { Left: "@: Player" });
-        this.sidebar.setLine(LineType.Strength, {
-            Left: "Strength",
-            Right: this.player.strength.toString(),
-            BarPercent: this.player.strength.toPercent(),
-            BarColor: "crimson"
-        });
-        this.sidebar.setLine(LineType.Speed, {
-            Left: "Speed",
-            Right: this.player.speed.toString(),
-            BarPercent: this.player.speed.toPercent(),
-            BarColor: "limegreen"
-        });
-        this.sidebar.setLine(LineType.Mind, {
-            Left: "Mind",
-            Right: this.player.mind.toString(),
-            BarPercent: this.player.mind.toPercent(),
-            BarColor: "cornflowerblue"
-        });
+        this.sidebar.setLine(LineType.Strength, { Left: "Strength", BarPercent: 100, BarColor: "crimson", Right: "" });
+        this.sidebar.setLine(LineType.Speed, { Left: "Speed", BarPercent: 0, BarColor: "limegreen", Right: "" });
+        this.sidebar.setLine(LineType.Mind, { Left: "Mind", BarPercent: 0, BarColor: "cornflowerblue", Right: "" });
         this.sidebar.setLine(LineType.HeaderEffects, { Left: "Effects" });
+    }
+
+    private handlePlayerStatsChanged(stat: StatType, newValues: PlayerStat): void {
+        let lineType = LineType.Strength;
+        switch (stat) {
+            case StatType.Speed:
+                lineType = LineType.Speed;
+                break;
+            case StatType.Mind:
+                lineType = LineType.Mind;
+                break;
+        }
+        this.sidebar.setLine(lineType, { BarPercent: newValues.toPercent(), Right: newValues.toString() });
     }
 }
