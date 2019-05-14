@@ -117,11 +117,11 @@ export class Game {
             }
         }
         let stats = this.player.getStats();
+        stats.subscribeStatChanged(this.handlePlayerStatsChanged.bind(this));
+
         stats.initializeStat(StatType.Strength, strength, 1);
         stats.initializeStat(StatType.Speed, speed, 1);
         stats.initializeStat(StatType.Mind, mind);
-
-        stats.subscribeStatChanged(this.handlePlayerStatsChanged.bind(this));
 
         this.addActor(this.player);
     }
@@ -159,9 +159,9 @@ export class Game {
         }
 
         this.sidebar.setLine(LineType.HeaderPlayer, { Left: "@: Player" });
-        this.sidebar.setLine(LineType.Strength, { Left: "Strength", BarPercent: 100, BarColor: "crimson", Right: "" });
-        this.sidebar.setLine(LineType.Speed, { Left: "Speed", BarPercent: 0, BarColor: "limegreen", Right: "" });
-        this.sidebar.setLine(LineType.Mind, { Left: "Mind", BarPercent: 0, BarColor: "cornflowerblue", Right: "" });
+        this.sidebar.setLine(LineType.Strength, { Left: "Strength", BarColor: "crimson" });
+        this.sidebar.setLine(LineType.Speed, { Left: "Speed", BarColor: "limegreen" });
+        this.sidebar.setLine(LineType.Mind, { Left: "Mind", BarColor: "cornflowerblue" });
         this.sidebar.setLine(LineType.HeaderEffects, { Left: "Effects" });
     }
 

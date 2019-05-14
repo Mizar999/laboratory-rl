@@ -41,39 +41,39 @@ export class Sidebar {
         lineElement.setAttribute("id", this.getIdAttribute(id));
         lineElement.setAttribute("class", "line");
 
-        if (line.BarPercent || line.BarColor) {
-            let element = document.createElement("div");
-            element.setAttribute("class", "bar");
-            element.setAttribute("style", this.getBarStyle(line.BarPercent, line.BarColor));
-            lineElement.appendChild(element);
+        if(!line.Left) {
+            line.Left = "";
+        }
+        if(!line.Right) {
+            line.Right = "";
         }
 
-        if (line.Left) {
-            let element = document.createElement("div");
-            element.setAttribute("class", "left");
-            element.append(document.createTextNode(line.Left));
-            lineElement.appendChild(element);
-        }
+        let barElement = document.createElement("div");
+        barElement.setAttribute("class", "bar");
+        barElement.setAttribute("style", this.getBarStyle(line.BarPercent, line.BarColor));
+        lineElement.appendChild(barElement);
 
-        if (line.Right) {
-            let element = document.createElement("div");
-            element.setAttribute("class", "right");
-            element.append(document.createTextNode(line.Right));
-            lineElement.appendChild(element);
-        }
+        let leftElement = document.createElement("div");
+        leftElement.setAttribute("class", "left");
+        leftElement.append(document.createTextNode(line.Left));
+        lineElement.appendChild(leftElement);
+
+        let rightElement = document.createElement("div");
+        rightElement.setAttribute("class", "right");
+        rightElement.append(document.createTextNode(line.Right));
+        lineElement.appendChild(rightElement);
 
         this.node.appendChild(lineElement);
     }
 
     private updateLine(id: string, line: SidebarLine): void {
-        // TODO elements of the line must be initialized before update
         let lineElement = document.getElementById(this.getIdAttribute(id));
 
-        if (line.BarPercent || line.BarColor) {
+        if (line.BarPercent !== undefined || line.BarColor) {
             let element = lineElement.getElementsByClassName("bar")[0];
             let style = element.getAttribute("style");
 
-            if (!line.BarPercent) {
+            if (line.BarPercent === undefined) {
                 line.BarPercent = parseFloat(style.match(/width:\s*([^%]+)%\s*;/i)[1]);
             }
             if (!line.BarColor) {
@@ -99,10 +99,12 @@ export class Sidebar {
     }
 
     private getBarStyle(barPercent: number, barColor?: string): string {
-        let style = `width: ${barPercent}%;`;
-        if (barColor) {
-            style += `background: ${barColor};`;
+        if (barPercent === undefined) {
+            barPercent = 0;
         }
-        return style;
+        if (!barColor) {
+            barColor = "darkgray";
+        }            
+        return `width: ${barPercent}%;background: ${barColor};`;
     }
 }
