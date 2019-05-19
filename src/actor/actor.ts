@@ -3,7 +3,6 @@ import { Visual } from "../ui/visual";
 import { BlockType } from "../ui/map/block-type";
 import { Point } from "../util/point";
 import { Command } from "../command/command";
-import { Creature } from "./creature";
 
 export const enum ActorType {
     Player,
@@ -22,12 +21,6 @@ export class Actor extends Entity {
     }
 
     describe(): string {
-        switch (this.type) {
-            case ActorType.Creature:
-                let creature = <Creature>(this as unknown);
-                return creature.breed.name;
-            default:
-                return this.constructor.name;
-        }
+        return this.constructor.name;
     }
 }

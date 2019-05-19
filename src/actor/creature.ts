@@ -10,4 +10,8 @@ export class Creature extends Actor {
         this.position = position;
         this.health = breed.maxHealth;
     }
+
+    describe(): string {
+        return this.breed.name;
+    }
 }
