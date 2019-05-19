@@ -12,6 +12,7 @@ import { InputUtility } from "./util/input-utility";
 import { Point } from "./util/point";
 import { ServiceLocator } from "./service-locator";
 import { Actor } from "./actor/actor";
+import { Breed } from "./actor/breed";
 import { Command, CommandResult, CommandResultType } from "./command/command";
 
 export class Game {
@@ -87,8 +88,9 @@ export class Game {
         this.initializeSidebar();
 
         this.map.generateMap(this.displayOptions.width, this.displayOptions.height);
-        let positions = this.map.getRandomPassablePositions();
-        this.createPlayer(positions[0]);
+        let positions = this.map.getRandomPassablePositions(7);
+        this.createPlayer(positions.splice(0, 1)[0]);
+        this.createCreatures(positions);
 
         this.scheduler = new Scheduler.Simple();
         for (let actor of this.getActors()) {
@@ -124,6 +126,17 @@ export class Game {
         stats.initializeStat(StatType.Mind, mind);
 
         this.addActor(this.player);
+    }
+
+    private createCreatures(positions: Point[]): void {
+        let bandit = new Breed({
+            name: "Bandit",
+            visual: new Visual("b", "cornflowerblue")
+        });
+
+        for (let position of positions) {
+            this.addActor(bandit.newCreature(position));
+        }
     }
 
     private async mainLoop(): Promise<any> {

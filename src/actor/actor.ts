@@ -3,10 +3,11 @@ import { Visual } from "../ui/visual";
 import { BlockType } from "../ui/map/block-type";
 import { Point } from "../util/point";
 import { Command } from "../command/command";
+import { Creature } from "./creature";
 
 export const enum ActorType {
     Player,
-    Enemy
+    Creature
 }
 
 export class Actor extends Entity {
@@ -18,5 +19,15 @@ export class Actor extends Entity {
 
     takeTurn(): Promise<Command> {
         return Promise.resolve(new Command());
+    }
+
+    describe(): string {
+        switch (this.type) {
+            case ActorType.Creature:
+                let creature = <Creature>(this as unknown);
+                return creature.breed.name;
+            default:
+                return this.constructor.name;
+        }
     }
 }
