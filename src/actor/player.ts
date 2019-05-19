@@ -6,6 +6,7 @@ import { Visual } from "../ui/visual";
 import { ServiceLocator } from "../service-locator";
 import { Command } from "../command/command";
 import { WalkCommand } from "../command/walk-command";
+import { Game } from "../game";
 
 export class Player extends Actor {
     private stats: PlayerStats;
@@ -33,7 +34,7 @@ export class Player extends Actor {
         return this.stats;
     }
 
-    async takeTurn(): Promise<Command> {
+    async takeTurn(game: Game): Promise<Command> {
         this.command = undefined;
         await ServiceLocator.getInputUtility().waitForInput(this.handleInput.bind(this));
         return this.command;

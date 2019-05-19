@@ -14,6 +14,8 @@ import { ServiceLocator } from "./service-locator";
 import { Actor } from "./actor/actor";
 import { Breed } from "./actor/breed";
 import { Command, CommandResult, CommandResultType } from "./command/command";
+import { AI } from "./ai/ai";
+import { MeleeAI } from "./ai/melee-ai";
 
 export class Game {
     private display: Display
@@ -131,7 +133,8 @@ export class Game {
     private createCreatures(positions: Point[]): void {
         let bandit = new Breed({
             name: "Bandit",
-            visual: new Visual("b", "cornflowerblue")
+            visual: new Visual("b", "cornflowerblue"),
+            ai: new MeleeAI()
         });
 
         for (let position of positions) {
@@ -151,7 +154,7 @@ export class Game {
                 }
             }
 
-            command = await actor.takeTurn();
+            command = await actor.takeTurn(this);
             commandResult = await command.execute(this);
             if (commandResult.result != CommandResultType.Success && commandResult.message) {
                 this.messageLog.addMessages(commandResult.message);

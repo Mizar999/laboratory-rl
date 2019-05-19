@@ -9,6 +9,18 @@ export class Point {
         return this.x == point.x && this.y == point.y;
     }
 
+    plus(point: Point): Point {
+        this.x += point.x;
+        this.y += point.y;
+        return this;
+    }
+
+    minus(point: Point): Point {
+        this.x -= point.x;
+        this.y -= point.y;
+        return this;
+    }
+
     toString(): string {
         return `[${this.x}, ${this.y}]`;
     }

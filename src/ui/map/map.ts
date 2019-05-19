@@ -1,4 +1,6 @@
-import { RNG } from "rot-js";
+import { RNG, Path } from "rot-js";
+import AStar from "rot-js/lib/path/astar";
+
 import { Game } from "../../game";
 import { Tile } from "./tile";
 import { Point } from "../../util/point";
@@ -7,6 +9,7 @@ import { Actor } from "../../actor/actor";
 
 export class Map {
     private floor: { [key: string]: Tile };
+    private path: Point[];
 
     constructor(private game: Game) {
         this.floor = {};
@@ -85,7 +88,34 @@ export class Map {
         return false;
     }
 
+    getPath(source: Point, target: Point, topology: 4 | 6 | 8 = 8, passableCallback: (map: Map, x: number, y: number) => boolean = undefined): ReadonlyArray<Point> {
+        let aStar: AStar;
+        if (passableCallback) {
+            aStar = new Path.AStar(target.x, target.y, (x: number, y: number) => passableCallback(this, x, y), { topology: topology });
+        } else {
+            aStar = new Path.AStar(target.x, target.y, (x: number, y: number) => this.passableCallback(source, x, y), { topology: topology });
+        }
+        this.path = [];
+        aStar.compute(source.x, source.y, this.pathCallback.bind(this));
+        if (this.path.length > 0) {
+            this.path.shift(); // Remove the source position
+        }
+        return this.path;
+    }
+
     private toKey(x: number, y: number): string {
         return x + "," + y;
+    }
+
+    private passableCallback(source: Point, x: number, y: number): boolean {
+        let target = new Point(x, y);
+        if (source.equals(target)) {
+            return true;
+        }
+        return this.isPassable(target);
+    }
+
+    private pathCallback(x: number, y: number): void {
+        this.path.push(new Point(x, y));
     }
 }
