@@ -1,4 +1,4 @@
-import { InputUtility } from "./util/input-utility";
+import { InputUtility } from "./input-utility";
 
 export class ServiceLocator {
     private static inputUtility: InputUtility;

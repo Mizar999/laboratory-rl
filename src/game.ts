@@ -10,10 +10,11 @@ import { Player } from "./actor/player";
 import { StatType, PlayerStat } from "./actor/player-stats";
 import { InputUtility } from "./util/input-utility";
 import { Point } from "./util/point";
-import { ServiceLocator } from "./service-locator";
+import { ServiceLocator } from "./util/service-locator";
 import { Actor } from "./actor/actor";
 import { Breed } from "./actor/breed";
 import { Command, CommandResult, CommandResultType } from "./command/command";
+import { StatelessAILocator } from "./ai/stateless-ai-locator";
 import { AI } from "./ai/ai";
 import { MeleeAI } from "./ai/melee-ai";
 
@@ -65,7 +66,8 @@ export class Game {
     }
 
     private initialize(): void {
-        ServiceLocator.provideInputUtility(new InputUtility());
+        this.initializeServiceLocator();
+        this.initializeStatelessAILocator();
 
         this.displayOptions = {
             width: 50,
@@ -78,7 +80,7 @@ export class Game {
 
         this.sidebar = new Sidebar(document.getElementById("sidebar"));
 
-        let maxMessages = 4;
+        let maxMessages = 5;
         this.messageLog = new MessageLog(document.getElementById("messages"), maxMessages);
         this.messageLog.addMessages(...Array(maxMessages).fill("&nbsp;"));
 
@@ -86,11 +88,20 @@ export class Game {
         this.map = new Map(this);
     }
 
+    private initializeServiceLocator(): void {
+        ServiceLocator.provideInputUtility(new InputUtility());
+    }
+
+    private initializeStatelessAILocator(): void {
+        StatelessAILocator.provideAI(new AI());
+        StatelessAILocator.provideMeleeAI(new MeleeAI());
+    }
+
     private initializeLevel(): void {
         this.initializeSidebar();
 
         this.map.generateMap(this.displayOptions.width, this.displayOptions.height);
-        let positions = this.map.getRandomPassablePositions(7);
+        let positions = this.map.getRandomPassablePositions(3);
         this.createPlayer(positions.splice(0, 1)[0]);
         this.createCreatures(positions);
 
@@ -134,7 +145,7 @@ export class Game {
         let bandit = new Breed({
             name: "Bandit",
             visual: new Visual("b", "cornflowerblue"),
-            ai: new MeleeAI()
+            ai: StatelessAILocator.getMeleeAI()
         });
 
         for (let position of positions) {

@@ -3,7 +3,7 @@ import { Actor, ActorType } from "./actor";
 import { PlayerStats, StatType } from "./player-stats";
 import { Point } from "../util/point";
 import { Visual } from "../ui/visual";
-import { ServiceLocator } from "../service-locator";
+import { ServiceLocator } from "../util/service-locator";
 import { Command } from "../command/command";
 import { WalkCommand } from "../command/walk-command";
 import { Game } from "../game";
@@ -47,6 +47,9 @@ export class Player extends Actor {
             this.command = new WalkCommand(this, diff[0], diff[1]);
         } else {
             switch (code) {
+                case KEYS.VK_NUMPAD5:
+                    this.command = new Command();
+                    break;
                 case KEYS.VK_1:
                     this.stats.changeStatValue(StatType.Strength, -1);
                     break;

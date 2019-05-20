@@ -6,17 +6,17 @@ export class MessageLog {
         for (let message of messages) {
             element = document.createElement("div");
             element.innerHTML = message;
-            this.node.appendChild(element);
+            this.node.insertBefore(element, this.node.firstChild);
         }
 
         while (this.node.childNodes.length > this.maxMessages) {
-            this.node.removeChild(this.node.childNodes[0]);
+            this.node.removeChild(this.node.lastChild);
         }
     }
 
     clear(): void {
         while (this.node.childNodes.length > 0) {
-            this.node.removeChild(this.node.childNodes[0]);
+            this.node.removeChild(this.node.lastChild);
         }
     }
 }
