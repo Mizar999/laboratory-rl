@@ -19,8 +19,8 @@ export class Creature extends Actor {
     }
 
     wearsArmor(): boolean {
-        return this.breed.defenses.some(breedDefense => {
-            let defense = breedDefense.getDefense();
+        return this.breed.getDefenseItems().some(breedItem => {
+            let defense = breedItem.getItem().getDefense();
             return defense.getCategory() !== Category.Special && defense.getArmor() > 0;
         });
     }

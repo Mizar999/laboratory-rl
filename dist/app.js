@@ -669,7 +669,7 @@ eval("\r\nvar __extends = (this && this.__extends) || (function () {\r\n    var 
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\r\nObject.defineProperty(exports, \"__esModule\", { value: true });\r\nvar rot_js_1 = __webpack_require__(/*! rot-js */ \"./node_modules/rot-js/lib/index.js\");\r\nvar creature_1 = __webpack_require__(/*! ./creature */ \"./src/actor/creature.ts\");\r\nvar visual_1 = __webpack_require__(/*! ../ui/visual */ \"./src/ui/visual.ts\");\r\nvar ai_1 = __webpack_require__(/*! ../ai/ai */ \"./src/ai/ai.ts\");\r\nvar attack_1 = __webpack_require__(/*! ../combat/attack */ \"./src/combat/attack.ts\");\r\nvar breed_attack_1 = __webpack_require__(/*! ../combat/breed-attack */ \"./src/combat/breed-attack.ts\");\r\nvar Breed = /** @class */ (function () {\r\n    function Breed(params) {\r\n        var parent = {};\r\n        if (params.parent) {\r\n            parent = params.parent;\r\n        }\r\n        this.name = params.name || parent.name || Breed.MissingName;\r\n        this.visual = params.visual || parent.visual || Breed.MissingVisual;\r\n        this.difficulty = params.difficulty || parent.difficulty || 0;\r\n        this.maxHealth = params.maxHealth || parent.maxHealth || Math.max(this.difficulty * 3, 0);\r\n        this.ai = params.ai || parent.ai || Breed.MissingAI;\r\n        // TODO: let enemies wear items & equipment (also natural equipment like claws)\r\n        this.attacks = params.attacks || parent.attacks || new breed_attack_1.BreedAttack(attack_1.Attack.Unarmed);\r\n        this.defenses = params.defenses || parent.defenses || [];\r\n        this.moves = params.moves || parent.moves || [];\r\n    }\r\n    Breed.prototype.newCreature = function (position) {\r\n        return new creature_1.Creature(position, this);\r\n    };\r\n    Breed.prototype.getRandomAttack = function (rangeFilter) {\r\n        if (rangeFilter === void 0) { rangeFilter = undefined; }\r\n        var attacks;\r\n        if (rangeFilter === undefined) {\r\n            attacks = this.attacks;\r\n        }\r\n        else {\r\n            attacks = this.attacks.filter(function (attack) { return attack.getAttack().getRange() === rangeFilter; });\r\n        }\r\n        var sum = 0;\r\n        var probabilities = [];\r\n        for (var _i = 0, attacks_1 = attacks; _i < attacks_1.length; _i++) {\r\n            var attack = attacks_1[_i];\r\n            sum += Math.max(attack.getProbabilityWeight(), 0);\r\n            probabilities.push(sum);\r\n        }\r\n        var result = rot_js_1.RNG.getUniform() * sum;\r\n        for (var index in probabilities) {\r\n            if (result < probabilities[index]) {\r\n                return attacks[index];\r\n            }\r\n        }\r\n    };\r\n    Breed.MissingName = \"missing name\";\r\n    Breed.MissingVisual = new visual_1.Visual('@', \"red\", \"white\");\r\n    Breed.MissingAI = new ai_1.AI();\r\n    return Breed;\r\n}());\r\nexports.Breed = Breed;\r\n\n\n//# sourceURL=webpack:///./src/actor/breed.ts?");
+eval("\r\nObject.defineProperty(exports, \"__esModule\", { value: true });\r\nvar creature_1 = __webpack_require__(/*! ./creature */ \"./src/actor/creature.ts\");\r\nvar visual_1 = __webpack_require__(/*! ../ui/visual */ \"./src/ui/visual.ts\");\r\nvar ai_1 = __webpack_require__(/*! ../ai/ai */ \"./src/ai/ai.ts\");\r\nvar text_constants_1 = __webpack_require__(/*! ../util/text-constants */ \"./src/util/text-constants.ts\");\r\nvar Breed = /** @class */ (function () {\r\n    function Breed(params) {\r\n        if (params === void 0) { params = {}; }\r\n        var parent = {};\r\n        if (params.parent) {\r\n            parent = params.parent;\r\n        }\r\n        this.name = params.name || parent.name || text_constants_1.TextConstants.MissingName;\r\n        this.visual = params.visual || parent.visual || Breed.MissingVisual;\r\n        this.difficulty = params.difficulty || parent.difficulty || 0;\r\n        this.maxHealth = params.maxHealth || parent.maxHealth || Math.max(this.difficulty * 3, 0);\r\n        this.ai = params.ai || parent.ai || Breed.MissingAI;\r\n        this.items = params.items || parent.items || [];\r\n    }\r\n    Breed.prototype.newCreature = function (position) {\r\n        return new creature_1.Creature(position, this);\r\n    };\r\n    Breed.prototype.getAttackItems = function (rangeFilter) {\r\n        if (rangeFilter === void 0) { rangeFilter = undefined; }\r\n        return this.items.reduce(function (items, breedItem) {\r\n            var attack = breedItem.getItem().getAttack();\r\n            if (attack) {\r\n                if (!rangeFilter || attack.getRange() === rangeFilter) {\r\n                    items.push(breedItem);\r\n                }\r\n            }\r\n            return items;\r\n        }, []);\r\n    };\r\n    Breed.prototype.getDefenseItems = function () {\r\n        return this.items.reduce(function (items, breedItem) {\r\n            if (breedItem.getItem().getDefense()) {\r\n                items.push(breedItem);\r\n            }\r\n            return items;\r\n        }, []);\r\n    };\r\n    Breed.prototype.getUsableItems = function () {\r\n        return this.items.reduce(function (items, breedItem) {\r\n            if (breedItem.getItem().getUse()) {\r\n                items.push(breedItem);\r\n            }\r\n            return items;\r\n        }, []);\r\n    };\r\n    Breed.MissingVisual = new visual_1.Visual('@', \"red\", \"white\");\r\n    Breed.MissingAI = new ai_1.AI();\r\n    return Breed;\r\n}());\r\nexports.Breed = Breed;\r\n\n\n//# sourceURL=webpack:///./src/actor/breed.ts?");
 
 /***/ }),
 
@@ -681,7 +681,7 @@ eval("\r\nObject.defineProperty(exports, \"__esModule\", { value: true });\r\nva
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\r\nvar __extends = (this && this.__extends) || (function () {\r\n    var extendStatics = function (d, b) {\r\n        extendStatics = Object.setPrototypeOf ||\r\n            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||\r\n            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };\r\n        return extendStatics(d, b);\r\n    };\r\n    return function (d, b) {\r\n        extendStatics(d, b);\r\n        function __() { this.constructor = d; }\r\n        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());\r\n    };\r\n})();\r\nObject.defineProperty(exports, \"__esModule\", { value: true });\r\nvar actor_1 = __webpack_require__(/*! ./actor */ \"./src/actor/actor.ts\");\r\nvar category_1 = __webpack_require__(/*! ../combat/category */ \"./src/combat/category.ts\");\r\nvar Creature = /** @class */ (function (_super) {\r\n    __extends(Creature, _super);\r\n    function Creature(position, breed) {\r\n        var _this = _super.call(this, 1 /* Creature */, breed.visual) || this;\r\n        _this.breed = breed;\r\n        _this.position = position;\r\n        _this.health = breed.maxHealth;\r\n        return _this;\r\n    }\r\n    Creature.prototype.takeTurn = function (game) {\r\n        return this.breed.ai.nextAction(game, this);\r\n    };\r\n    Creature.prototype.wearsArmor = function () {\r\n        return this.breed.defenses.some(function (breedDefense) {\r\n            var defense = breedDefense.getDefense();\r\n            return defense.getCategory() !== category_1.Category.Special && defense.getArmor() > 0;\r\n        });\r\n    };\r\n    Creature.prototype.describe = function () {\r\n        return this.breed.name;\r\n    };\r\n    return Creature;\r\n}(actor_1.Actor));\r\nexports.Creature = Creature;\r\n\n\n//# sourceURL=webpack:///./src/actor/creature.ts?");
+eval("\r\nvar __extends = (this && this.__extends) || (function () {\r\n    var extendStatics = function (d, b) {\r\n        extendStatics = Object.setPrototypeOf ||\r\n            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||\r\n            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };\r\n        return extendStatics(d, b);\r\n    };\r\n    return function (d, b) {\r\n        extendStatics(d, b);\r\n        function __() { this.constructor = d; }\r\n        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());\r\n    };\r\n})();\r\nObject.defineProperty(exports, \"__esModule\", { value: true });\r\nvar actor_1 = __webpack_require__(/*! ./actor */ \"./src/actor/actor.ts\");\r\nvar category_1 = __webpack_require__(/*! ../combat/category */ \"./src/combat/category.ts\");\r\nvar Creature = /** @class */ (function (_super) {\r\n    __extends(Creature, _super);\r\n    function Creature(position, breed) {\r\n        var _this = _super.call(this, 1 /* Creature */, breed.visual) || this;\r\n        _this.breed = breed;\r\n        _this.position = position;\r\n        _this.health = breed.maxHealth;\r\n        return _this;\r\n    }\r\n    Creature.prototype.takeTurn = function (game) {\r\n        return this.breed.ai.nextAction(game, this);\r\n    };\r\n    Creature.prototype.wearsArmor = function () {\r\n        return this.breed.getDefenseItems().some(function (breedItem) {\r\n            var defense = breedItem.getItem().getDefense();\r\n            return defense.getCategory() !== category_1.Category.Special && defense.getArmor() > 0;\r\n        });\r\n    };\r\n    Creature.prototype.describe = function () {\r\n        return this.breed.name;\r\n    };\r\n    return Creature;\r\n}(actor_1.Actor));\r\nexports.Creature = Creature;\r\n\n\n//# sourceURL=webpack:///./src/actor/creature.ts?");
 
 /***/ }),
 
@@ -757,30 +757,6 @@ eval("\r\nObject.defineProperty(exports, \"__esModule\", { value: true });\r\nva
 
 /***/ }),
 
-/***/ "./src/combat/attack.ts":
-/*!******************************!*\
-  !*** ./src/combat/attack.ts ***!
-  \******************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\r\nObject.defineProperty(exports, \"__esModule\", { value: true });\r\nvar range_1 = __webpack_require__(/*! ./range */ \"./src/combat/range.ts\");\r\nvar category_1 = __webpack_require__(/*! ./category */ \"./src/combat/category.ts\");\r\nvar AttackType;\r\n(function (AttackType) {\r\n    AttackType[\"Strength\"] = \"strength\";\r\n    AttackType[\"Speed\"] = \"speed\";\r\n    AttackType[\"Mind\"] = \"mind\";\r\n    AttackType[\"Slash\"] = \"slash\";\r\n    AttackType[\"Pierce\"] = \"pierce\";\r\n    AttackType[\"Bash\"] = \"bash\";\r\n    AttackType[\"Fire\"] = \"fire\";\r\n    AttackType[\"Ice\"] = \"ice\";\r\n    AttackType[\"Electric\"] = \"electric\";\r\n    AttackType[\"Poison\"] = \"poison\";\r\n})(AttackType = exports.AttackType || (exports.AttackType = {}));\r\nvar Attack = /** @class */ (function () {\r\n    function Attack(category, range, damage, types) {\r\n        if (types === void 0) { types = []; }\r\n        this.category = category;\r\n        this.range = range;\r\n        this.damage = damage;\r\n        if (types.length == 0) {\r\n            switch (this.range) {\r\n                case range_1.Range.Melee:\r\n                    types.push(AttackType.Strength);\r\n                    break;\r\n                default:\r\n                    types.push(AttackType.Speed);\r\n                    break;\r\n            }\r\n        }\r\n        this.types = new Set(types);\r\n    }\r\n    Attack.prototype.getCategory = function () {\r\n        return this.category;\r\n    };\r\n    Attack.prototype.getRange = function () {\r\n        return this.range;\r\n    };\r\n    Attack.prototype.getDamage = function () {\r\n        return this.damage;\r\n    };\r\n    // TODO: define die result\r\n    Attack.prototype.getDiceModifier = function (dieResult) {\r\n        var modifier = Math.max(Math.min(dieResult, 20) - 16, 0);\r\n        if (this.types.has(AttackType.Pierce)) {\r\n            if (dieResult >= 17) {\r\n                modifier += 1;\r\n            }\r\n            else if (dieResult <= 5) {\r\n                modifier -= 1;\r\n            }\r\n        }\r\n        return modifier;\r\n    };\r\n    Attack.prototype.getDefenseModifier = function (target) {\r\n        var modifier = 0;\r\n        if (this.types.has(AttackType.Slash)) {\r\n            if (target.wearsArmor()) {\r\n                modifier -= 1;\r\n            }\r\n            else {\r\n                modifier += 1;\r\n            }\r\n        }\r\n        if (this.types.has(AttackType.Bash)) {\r\n            if (target.wearsArmor()) {\r\n                modifier += 1;\r\n            }\r\n            else {\r\n                modifier -= 1;\r\n            }\r\n        }\r\n        return modifier;\r\n    };\r\n    // TODO: function getCalculatedDamage\r\n    Attack.prototype.getTypes = function () {\r\n        return this.types;\r\n    };\r\n    Attack.Unarmed = new Attack(category_1.Category.Light, range_1.Range.Melee, 2, [AttackType.Strength, AttackType.Bash]);\r\n    return Attack;\r\n}());\r\nexports.Attack = Attack;\r\n\n\n//# sourceURL=webpack:///./src/combat/attack.ts?");
-
-/***/ }),
-
-/***/ "./src/combat/breed-attack.ts":
-/*!************************************!*\
-  !*** ./src/combat/breed-attack.ts ***!
-  \************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\r\nObject.defineProperty(exports, \"__esModule\", { value: true });\r\nvar BreedAttack = /** @class */ (function () {\r\n    function BreedAttack(attack, difficulty, probabilityWeight) {\r\n        if (difficulty === void 0) { difficulty = undefined; }\r\n        if (probabilityWeight === void 0) { probabilityWeight = 1; }\r\n        this.attack = attack;\r\n        this.difficulty = difficulty;\r\n        this.probabilityWeight = probabilityWeight;\r\n    }\r\n    BreedAttack.prototype.getAttack = function () {\r\n        return this.attack;\r\n    };\r\n    BreedAttack.prototype.getDifficulty = function () {\r\n        return this.difficulty;\r\n    };\r\n    BreedAttack.prototype.getProbabilityWeight = function () {\r\n        return this.probabilityWeight;\r\n    };\r\n    return BreedAttack;\r\n}());\r\nexports.BreedAttack = BreedAttack;\r\n\n\n//# sourceURL=webpack:///./src/combat/breed-attack.ts?");
-
-/***/ }),
-
 /***/ "./src/combat/category.ts":
 /*!********************************!*\
   !*** ./src/combat/category.ts ***!
@@ -790,18 +766,6 @@ eval("\r\nObject.defineProperty(exports, \"__esModule\", { value: true });\r\nva
 
 "use strict";
 eval("\r\nObject.defineProperty(exports, \"__esModule\", { value: true });\r\nvar Category;\r\n(function (Category) {\r\n    Category[\"Light\"] = \"light\";\r\n    Category[\"Middle\"] = \"middle\";\r\n    Category[\"Heavy\"] = \"heavy\";\r\n    Category[\"Natural\"] = \"natural\";\r\n    Category[\"Special\"] = \"special\";\r\n})(Category = exports.Category || (exports.Category = {}));\r\n\n\n//# sourceURL=webpack:///./src/combat/category.ts?");
-
-/***/ }),
-
-/***/ "./src/combat/range.ts":
-/*!*****************************!*\
-  !*** ./src/combat/range.ts ***!
-  \*****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\r\nObject.defineProperty(exports, \"__esModule\", { value: true });\r\nvar Range;\r\n(function (Range) {\r\n    Range[\"Melee\"] = \"melee\";\r\n    Range[\"ShortRange\"] = \"shortrange\";\r\n    Range[\"LongRange\"] = \"longrange\";\r\n})(Range = exports.Range || (exports.Range = {}));\r\n\n\n//# sourceURL=webpack:///./src/combat/range.ts?");
 
 /***/ }),
 
@@ -946,6 +910,18 @@ eval("\r\nObject.defineProperty(exports, \"__esModule\", { value: true });\r\nva
 
 "use strict";
 eval("\r\nObject.defineProperty(exports, \"__esModule\", { value: true });\r\nvar ServiceLocator = /** @class */ (function () {\r\n    function ServiceLocator() {\r\n    }\r\n    ServiceLocator.getInputUtility = function () {\r\n        return ServiceLocator.inputUtility;\r\n    };\r\n    ServiceLocator.provideInputUtility = function (inputUtility) {\r\n        ServiceLocator.inputUtility = inputUtility;\r\n    };\r\n    return ServiceLocator;\r\n}());\r\nexports.ServiceLocator = ServiceLocator;\r\n\n\n//# sourceURL=webpack:///./src/util/service-locator.ts?");
+
+/***/ }),
+
+/***/ "./src/util/text-constants.ts":
+/*!************************************!*\
+  !*** ./src/util/text-constants.ts ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\r\nObject.defineProperty(exports, \"__esModule\", { value: true });\r\nvar TextConstants;\r\n(function (TextConstants) {\r\n    TextConstants[\"MissingName\"] = \"missing name\";\r\n})(TextConstants = exports.TextConstants || (exports.TextConstants = {}));\r\n\n\n//# sourceURL=webpack:///./src/util/text-constants.ts?");
 
 /***/ })
 
