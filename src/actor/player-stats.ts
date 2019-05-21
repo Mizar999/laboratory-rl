@@ -35,7 +35,7 @@ export class PlayerStats {
 
         this.maxBoost = this.rank = 0;
 
-        // TODO calculate health
+        // TODO: calculate health
         this.health = HealthType.Healthy;
 
         this.statChangedListeners = [];
@@ -57,7 +57,7 @@ export class PlayerStats {
     }
 
     changeStatValue(stat: StatType, diff: number): void {
-        // TODO cascade stat change to other stats
+        // TODO: cascade stat change to other stats
         this[stat].value = Math.max(Math.min(this[stat].value + diff, this[stat].max), 0);
         this.handleStatChanged(stat);
     }

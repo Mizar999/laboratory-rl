@@ -40,6 +40,11 @@ export class Player extends Actor {
         return this.command;
     }
 
+    wearsArmor(): boolean {
+        // TODO: define equipment / defenses
+        return false;
+    }
+
     private handleInput(event: KeyboardEvent): boolean {
         let code = event.keyCode;
         if (code in this.keyMap) {

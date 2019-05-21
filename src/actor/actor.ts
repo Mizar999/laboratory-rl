@@ -10,7 +10,7 @@ export const enum ActorType {
     Creature
 }
 
-export class Actor extends Entity {
+export abstract class Actor extends Entity {
     position: Point;
 
     constructor(public readonly type: ActorType, visual: Visual) {
@@ -20,6 +20,8 @@ export class Actor extends Entity {
     takeTurn(game: Game): Promise<Command> {
         return Promise.resolve(new Command());
     }
+
+    abstract wearsArmor(): boolean;
 
     describe(): string {
         return this.constructor.name;
