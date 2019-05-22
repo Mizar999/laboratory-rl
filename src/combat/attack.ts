@@ -1,6 +1,7 @@
 import { Range } from "./range";
 import { Category } from "./category";
 import { Actor } from "../actor/actor";
+import { DiceResult } from "../util/dice";
 
 export enum AttackType {
     Strength = "strength",
@@ -46,8 +47,12 @@ export class Attack {
         return this.damage;
     }
 
-    // TODO: define die result
-    getDiceModifier(dieResult: number): number {
+    getDiceModifier(diceResult: DiceResult): number {
+        if (!diceResult || diceResult.sides !== 20 || !diceResult.dice || diceResult.dice.length < 1) {
+            return 0;
+        }
+
+        let dieResult = diceResult.dice[0];
         let modifier = Math.max(Math.min(dieResult, 20) - 16, 0);
         if (this.types.has(AttackType.Pierce)) {
             if (dieResult >= 17) {
