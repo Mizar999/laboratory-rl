@@ -11,8 +11,8 @@ A roguelike game built with TypeScript and the [rot.js](https://github.com/ondra
 - Init npm and install necessary packages
 
     ```powershell
-    npm init -y
-    npm install --save-dev typescript rot-js webpack webpack-cli ts-loader live-server npm-run-all
+    git clone https://github.com/Mizar999/laboratory-rl.git
+    npm install
     ```
 
 - Create **Webpack** configuration `webpack.config.js`:
@@ -70,22 +70,12 @@ A roguelike game built with TypeScript and the [rot.js](https://github.com/ondra
     npm run-script build
     ```
 
-- To run multiple npm scripts cross platform in parallel run the following command (use the **npx** command if the packages were installed locally):
+- To run multiple npm scripts cross platform in parallel run the following command:
 
     ```powershell
     # if globally installed
-    npm-run-all --parallel watch serve
+    concurrently npm:watch npm:serve
 
     # if locally installed
-    npx npm-run-all --parallel watch serve
-    ```
-
-- Or use the shorthand command **run-p** for parallel tasks:
-
-    ```powershell
-    # if globally installed
-    run-p watch serve
-
-    # if locally installed
-    npx run-p watch serve
+    npx concurrently npm:watch npm:serve
     ```
