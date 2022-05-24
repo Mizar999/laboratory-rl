@@ -60,7 +60,7 @@ A roguelike game built with TypeScript and the [rot.js](https://github.com/ondra
     "scripts": {
         "build": "webpack",
         "watch": "webpack --watch",
-        "serve": "live-server --port=8085"
+        "serve": "http-server --port=8085 -c-1"
     }
     ```
 
