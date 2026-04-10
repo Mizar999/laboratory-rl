@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/Mizar999/laboratory-rl#readme",
   "devDependencies": {
-    "concurrently": "^7.6.0",
+    "concurrently": "^9.2.1",
     "http-server": "^14.1.1",
     "rot-js": "^2.2.0",
     "serialize-javascript": "^7.0.5",
