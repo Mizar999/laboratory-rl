@@ -1,36 +1,15 @@
 {
   "name": "laboratory-rl",
   "version": "1.0.0",
-  "description": "A roguelike game built with TypeScript and the [rot.js](https://github.com/ondras/rot.js) library. **The game is currently in the planning and design phase**. It's not playable in it's current state, but if you're interested anyway follow this link [https://mizar999.github.io/laboratory-rl/](https://mizar999.github.io/laboratory-rl/)",
-  "main": "webpack.config.js",
+  "description": "A roguelike game built with TypeScript and rot.js",
   "scripts": {
-    "build": "webpack",
-    "watch": "webpack --watch",
-    "serve": "http-server --port=8085 -c-1"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Mizar999/laboratory-rl.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Mizar999/laboratory-rl/issues"
-  },
-  "homepage": "https://github.com/Mizar999/laboratory-rl#readme",
   "devDependencies": {
-    "concurrently": "^9.2.1",
-    "http-server": "^14.1.1",
     "rot-js": "^2.2.0",
-    "serialize-javascript": "^7.0.5",
-    "ts-loader": "^9.4.2",
-    "typescript": "^4.9.4",
-    "webpack": "~5.104.0",
-    "webpack-cli": "^5.0.1"
-  },
-  "overrides": {
-    "shell-quote": "^1.9.0",
-    "fast-uri": "^3.1.5"
+    "typescript": "^5.6.3",
+    "vite": "^6.0.0"
   }
 }
